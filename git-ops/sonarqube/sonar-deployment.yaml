@@ -24,9 +24,9 @@ spec:
             - name: sonar-extensions
               mountPath: "/opt/sonarqube/extensions/"
           securityContext:
-            fsGroup: 1000
-            runAsUser: 1000
-            runAsGroup: 1000
+            fsGroup: 999
+            runAsUser: 999
+            runAsGroup: 999
       volumes:
         - name: sonar-data
           persistentVolumeClaim:
