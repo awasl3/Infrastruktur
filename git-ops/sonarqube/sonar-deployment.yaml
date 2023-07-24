@@ -23,6 +23,13 @@ spec:
               mountPath: /opt/sonarqube/data
             - name: sonar-extensions
               mountPath: "/opt/sonarqube/extensions/"
+          securityContext:
+            runAsUser: 0  # Set the user ID to root
+            runAsGroup: 0  # Set the group ID to root
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - SYS_ADMIN
       volumes:
         - name: sonar-data
           persistentVolumeClaim:
