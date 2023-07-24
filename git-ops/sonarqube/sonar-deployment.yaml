@@ -21,12 +21,12 @@ spec:
           volumeMounts:
             # - name: sonar-data
             #   mountPath: /opt/sonarqube/data
-            - name: sonar-extensions
-              mountPath: "/opt/sonarqube/extensions/"
+            # - name: sonar-extensions
+            #   mountPath: "/opt/sonarqube/extensions/"
       volumes:
         # - name: sonar-data
         #   persistentVolumeClaim:
         #     claimName: sonar-data
-        - name: sonar-extensions
-          persistentVolumeClaim:
-            claimName: sonar-extensions    
+        # - name: sonar-extensions
+        #   persistentVolumeClaim:
+        #     claimName: sonar-extensions    
