@@ -19,7 +19,7 @@ spec:
         app: gitops
     spec:
       containers:
-      - image: timcicd/gitops:19
+      - image: timcicd/gitops:05593a1f304fbc906d6b3fdc83cc601b7a39a1e5
         ports:
             - containerPort: 9990
         name: gitops
