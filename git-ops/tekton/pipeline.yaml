@@ -1,0 +1,97 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: gitops-pipeline
+  namespace: ci
+spec:
+  params:
+  - name: revision
+    type: string
+  - name: repourl
+    type: string
+  workspaces:
+  - name: shared-data
+  - name: git-credentials
+  - name: docker-credentials
+  - name: infrastruktur-data
+  tasks:
+  - name: fetch-source
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    - name: ssh-directory
+      workspace: git-credentials
+    params:
+    - name: url
+      value: $(params.repourl)
+
+  - name: build-gradle
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: gradle
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: GRADLE_IMAGE
+      value: gradle:7.6-jdk17
+    - name: TASKS
+      value: [build, test jacocoTestReport]
+
+
+  - name: code-analysis
+    runAfter: ["build-gradle"]
+    taskRef:
+      name: sonarqube-scanner-self
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: sonarqube-url
+      value: http://sonarqube-service.ci:9000
+    - name: sonarqube-project-key
+      value: gitops
+
+
+  - name: build-push
+    runAfter: ["code-analysis"]
+    taskRef:
+      name: kaniko
+    workspaces:
+    - name: source
+      workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
+    params:
+    - name: IMAGE
+      value: docker.io/timcicd/gitops:$(params.revision)
+    - name: DOCKERFILE
+      value: ./Dockerfile
+    - name: EXTRA_ARGS
+      value: [--build-arg=JAR_FILE=./build/libs/simple-app-0.0.1-SNAPSHOT.jar]
+
+  - name: update-deployment
+    runAfter: ["build-push"]
+    taskRef:
+      name: git-cli
+    workspaces:
+    - name: source
+      workspace: infrastruktur-data
+    - name: ssh-directory
+      workspace: git-credentials
+    params:
+    - name: GIT_USER_NAME
+      value: Tim-Wasl
+    - name: GIT_SCRIPT
+      value: |
+        git init -b main
+        git remote add origin git@github.com:Tim-Wasl/Infrastruktur.git
+        git pull origin main
+        sed -i "s/timcicd\/gitops.*/timcicd\/gitops:$(params.revision)/" ./kubernetes/deployment.yaml
+        cat ./kubernetes/deployment.yaml
+        git status
+        git add .
+        git commit -m "changed by tekton"
+        git push origin main

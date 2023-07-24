@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sonarqube-scanner-self
+  namespace: ci
+spec:
+  workspaces:
+  - name: source
+  params:
+  - name: sonarqube-url
+    description: The URL of the SonarQube server
+  - name: sonarqube-project-key
+    description: The project key in SonarQube
+  steps:
+    - name: sonarqube-scan
+      image: sonarsource/sonar-scanner-cli
+      workingDir: $(workspaces.source.path)
+      env:
+      - name: SONAR_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: sonarqube-secret
+            key: sonar-token-key
+      command:
+        - sonar-scanner
+      args:
+        - "-Dsonar.host.url=$(inputs.params.sonarqube-url)"
+        - "-Dsonar.projectKey=$(inputs.params.sonarqube-project-key)"
+        - "-Dsonar.login=$(SONAR_TOKEN)"
+        - "-Dsonar.java.binaries=./build"
+        - "-Dsonar.exclusions=src/test/**/*"
+        - "-Dsonar.coverage.jacoco.xmlReportPaths=./build/reports/jacoco/test/jacocoTestReport.xml"
+        - "-Dsonar.qualitygate.wait=true"

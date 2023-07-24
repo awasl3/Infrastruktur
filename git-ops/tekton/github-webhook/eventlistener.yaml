@@ -1,0 +1,16 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: event-listener
+  namespace: ci
+spec:
+  serviceAccountName: tekton-service-account
+  triggers:
+    - name: github-listener
+      interceptors:
+        - ref:
+            name: "github"
+      bindings:
+        - ref: github-webhook-binding
+      template:
+        ref: github-webhook-template

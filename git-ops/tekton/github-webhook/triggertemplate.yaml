@@ -1,0 +1,48 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: github-webhook-template
+  namespace: ci
+spec:
+  params:
+    - name: revision
+      description: The git revision (SHA)
+      default: main
+    - name: repourl
+      default: https://github.com/Tim-Wasl/Code.git
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: gitops-pipeline-run
+      spec:
+        pipelineRef:
+          name: gitops-pipeline
+        workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+        - name: infrastruktur-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+        - name: git-credentials
+          secret:
+            secretName: github-secret
+        - name: docker-credentials
+          secret:
+            secretName: docker-credentials
+        params:
+        - name: revision
+          value: $(tt.params.revision)
+        - name: repourl
+          value: https://github.com/Tim-Wasl/Code.git
