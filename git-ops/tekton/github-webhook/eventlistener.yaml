@@ -5,9 +5,6 @@ metadata:
   namespace: ci
 spec:
   serviceAccountName: tekton-service-account
-  resources:
-    kubernetesResource:
-      serviceType: LoadBalancer
   triggers:
     - name: github-listener
       interceptors:
