@@ -7,7 +7,7 @@ spec:
   serviceAccountName: tekton-service-account
   resources:
     kubernetesResource:
-      serviceType: NodePort
+      serviceType: LoadBalancer
   triggers:
     - name: github-listener
       interceptors:
