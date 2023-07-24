@@ -5,6 +5,9 @@ metadata:
   namespace: ci
 spec:
   serviceAccountName: tekton-service-account
+  resources:
+    kubernetesResource:
+      serviceType: NodePort
   triggers:
     - name: github-listener
       interceptors:
