@@ -23,8 +23,8 @@ spec:
               mountPath: /opt/sonarqube/data
             - name: sonar-extensions
               mountPath: "/opt/sonarqube/extensions/"
-         securityContext:
-              fsGroup: 999
+          securityContext:
+            fsGroup: 999
       volumes:
         - name: sonar-data
           persistentVolumeClaim:
