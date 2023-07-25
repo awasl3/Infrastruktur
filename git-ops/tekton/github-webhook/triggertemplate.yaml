@@ -9,7 +9,7 @@ spec:
       description: The git revision (SHA)
       default: main
     - name: repourl
-      default: https://github.com/Tim-Wasl/Code.git
+      default: https://github.com/awasl3/Code.git
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -50,4 +50,4 @@ spec:
         - name: revision
           value: $(tt.params.revision)
         - name: repourl
-          value: https://github.com/Tim-Wasl/Code.git
+          value: https://github.com/awasl3/Code.git

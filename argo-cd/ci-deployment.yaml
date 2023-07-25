@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Tim-Wasl/Infrastruktur
+    repoURL: https://github.com/awasl3/Infrastruktur
     targetRevision: HEAD
     path: ./git-ops
     directory:

@@ -66,7 +66,7 @@ spec:
       workspace: docker-credentials
     params:
     - name: IMAGE
-      value: docker.io/timcicd/gitops:$(params.revision)
+      value: docker.io/awasl/ci:$(params.revision)
     - name: DOCKERFILE
       value: ./Dockerfile
     - name: EXTRA_ARGS
@@ -83,13 +83,13 @@ spec:
       workspace: git-credentials
     params:
     - name: GIT_USER_NAME
-      value: Tim-Wasl
+      value: awasl3
     - name: GIT_SCRIPT
       value: |
         git init -b main
-        git remote add origin git@github.com:Tim-Wasl/Infrastruktur.git
+        git remote add origin git@github.com:awasl3/Infrastruktur.git
         git pull origin main
-        sed -i "s/timcicd\/gitops.*/timcicd\/gitops:$(params.revision)/" ./kubernetes/deployment.yaml
+        sed -i "s/awasl\/ci.*/awasl\/ci:$(params.revision)/" ./kubernetes/deployment.yaml
         cat ./kubernetes/deployment.yaml
         git status
         git add .
