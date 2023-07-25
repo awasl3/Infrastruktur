@@ -18,6 +18,11 @@ spec:
       spec:
         pipelineRef:
           name: gitops-pipeline
+        podTemplate:
+          securityContext:
+            fsGroup: 0
+            runAsGroup: 0
+            runAsUser: 0
         workspaces:
         - name: shared-data
           volumeClaimTemplate:
