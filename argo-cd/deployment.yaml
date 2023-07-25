@@ -1,19 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-deployment2
+  name: argo-deployment
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Tim-Wasl/Infrastruktur
     targetRevision: HEAD
-    path: ./git-ops
-    directory:
-      recurse: true
+    path: ./kubernetes
   destination:
     server: https://kubernetes.default.svc
-    namespace: ci
+    namespace: app
   syncPolicy: 
     automated:
       prune: true
